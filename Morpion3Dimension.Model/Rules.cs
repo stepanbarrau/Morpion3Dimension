@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Morpion3Dimension.Model
 {
-    class Rules
+    public class Rules
     {
 
             public bool isValidMove(Move move, Symbol symbol, Grid grid)
@@ -73,7 +73,7 @@ namespace Morpion3Dimension.Model
 
             }
 
-        internal bool IsDraw(Grid grid)
+        public bool IsDraw(Grid grid)
         {
             for (int i = 0; i < 3; i++)
             {
