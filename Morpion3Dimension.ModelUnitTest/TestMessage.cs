@@ -48,7 +48,7 @@ namespace Morpion3Dimension.ModelUnitTest
         }
 
         [TestMethod]
-        public void TestMoveToBinary()
+        public void TestMoveToString()
         {
             int[] coord = new int[] { 1, 2, 3 };
             var move = new Move(coord);
@@ -67,6 +67,35 @@ namespace Morpion3Dimension.ModelUnitTest
 
 
         }
+
+        [TestMethod]
+        public void TestGameOver()
+        {
+            var gameOv = new GameOverMessage(true);
+            byte[] bytes = Encoding.UTF8.GetBytes(gameOv.MessageToString());
+            var gameOv2 = new GameOverMessage(bytes);
+            Assert.AreEqual(gameOv.MessageToString(), gameOv2.MessageToString());
+        }
+
+        [TestMethod]
+        public void TestGameOverToString()
+        {
+            var gameOv = new GameOverMessage(true);
+            Assert.AreEqual($"OVER|{true.ToString()}", gameOv.MessageToString());
+        }
+
+        [TestMethod]
+        public void TestGrid()
+        {
+            var grid = new Grid();
+            byte[] bytes = Encoding.UTF8.GetBytes(grid.MessageToString());
+            var grid2 = new Grid(bytes);
+            Assert.AreEqual(grid.MessageToString(), grid2.MessageToString());
+        }
+
+
+
+
 
     }
 }

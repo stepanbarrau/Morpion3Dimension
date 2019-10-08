@@ -56,13 +56,15 @@ namespace Morpion3Dimension.Server
 
         public void SendGameOver(bool victory)
         {
-            var data = Encoding.UTF8.GetBytes("");
+            var gameOver = new GameOverMessage(victory);
+            var data = Encoding.UTF8.GetBytes(gameOver.MessageToString());
             stream.Write(data, 0, data.Length);
         }
 
         public void SendGrid(Grid grid)
         {
-            throw new NotImplementedException();
+            var data = Encoding.UTF8.GetBytes(grid.MessageToString());
+            stream.Write(data, 0, data.Length);
         }
     }
 }

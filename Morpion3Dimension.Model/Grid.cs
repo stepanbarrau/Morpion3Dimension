@@ -5,11 +5,13 @@ using System.Text;
 namespace Morpion3Dimension.Model
 {
     public enum Symbol { empty = 0, circle = 1, cross = -1 }
-    public class Grid
+    public class Grid : Message
     {
         public Square[,,] grid = new Square[3, 3, 3];
+        
         public Grid()
         {
+            this.type = MessageType.grid;
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
@@ -62,9 +64,9 @@ namespace Morpion3Dimension.Model
             return (representation);
         }
 
-        public string gridToString()
+        public override string DataToString()
         {
-            string data = "GAMESTATE";
+            string data = "";
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
@@ -78,18 +80,15 @@ namespace Morpion3Dimension.Model
             return (data);
         }
 
-        public static Grid stringToGrid(string data)
+        public Grid(byte[] bytes)
         {
-            Grid grid = new Grid();
-
-            if (data.Substring(0, 9) != "GAMESTATE")
+            if (Message.GetMessageType(bytes) != MessageType.grid)
             {
-                throw (new Exception("wrong gamestate format"));
+                throw new Exception("Error: trying to deserialize to grid an object with wrong Messagetype");
             }
-
-            Console.WriteLine(data);
-
-            string[] dataString = data.Substring(10).Split('|');
+            this.type = MessageType.grid;
+            var data = Message.GetData(bytes);
+            string[] dataString = data.Split('|');
             int[] states = new int[27];
             for (int i = 0; i < 27; i++)
             {
@@ -113,12 +112,11 @@ namespace Morpion3Dimension.Model
                     {
                         Square square = new Square();
                         square.symbol = (Symbol)states[currentIndex];
-                        grid[i, j, k] = square;
+                        this[i, j, k] = square;
                         currentIndex++;
                     }
                 }
             }
-            return (grid);
         }
     }
 }
