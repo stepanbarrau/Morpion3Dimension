@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Morpion3Dimension.Model
 {
-    public class Move
+    public class Move : Message
     {
         public int x { get; private set; }
         public int y { get; private set; }
@@ -13,26 +13,35 @@ namespace Morpion3Dimension.Model
         public Move(int[] coord)
         {
             (this.x, this.y, this.z) = (coord[0], coord[1], coord[2]);
+            type = MessageType.move;
         }
 
-        //this part is for easy serialisation
-        public string moveToString()
+        
+
+        public override string DataToString()
         {
-            return ($"MOVE|{x}|{y}|{z}");
+            return $"{x}|{y}|{z}";
         }
 
-        public static Move StringToMove(string data)
-        {
-            if (data.Substring(0, 4) != "MOVE")
+        public Move(byte[] bytes)
+        {   
+            if( Message.GetMessageType(bytes) != MessageType.move)
             {
-                throw (new Exception("wrong move format"));
+                throw new Exception("Error: trying to deserialize to move an object with wrong Messagetype");
             }
+            var data = Message.GetData(bytes);
+
             int[] coord = new int[3];
-            string dataString = data.Substring(5);
-            coord = (int[])dataString.Split('|').Select(n => Int32.Parse(n)).ToArray();
-
-            return (new Move(coord));
+            try
+            {
+                coord = (int[])data.Split('|').Select(n => Int32.Parse(n)).ToArray();
+                (this.x, this.y, this.z) = (coord[0], coord[1], coord[2]);
+                type = MessageType.move;
+            }
+            catch
+            {
+                throw (new Exception("Error : couldn't deserialize the move"));
+            }
         }
-
     }
 }
