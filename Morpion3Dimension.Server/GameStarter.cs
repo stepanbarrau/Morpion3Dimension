@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Morpion3Dimension.Model;
@@ -17,9 +18,16 @@ namespace Morpion3Dimension.Server
 
         private TcpClient cl2;
 
+        public GameStarter()
+        {
+            tcpClients = new ConcurrentQueue<TcpClient>();
+        }
+
         public void AddClient(TcpClient client)
         {
+            GreetClient(client);
             tcpClients.Enqueue(client);
+            
             if (tcpClients.Count >= 2)
 
             {
@@ -34,7 +42,16 @@ namespace Morpion3Dimension.Server
 
         private void startGame(object state)
         {
+            
             new Game(new TcpPlayer(cl1, Symbol.circle), new TcpPlayer(cl2, Symbol.cross));
+        }
+
+        private void GreetClient(TcpClient client)
+        {
+            byte[] data = Encoding.UTF8.GetBytes($"You're connected, there is currently {tcpClients.Count}  other clients connected");
+            client.GetStream().Write(data, 0, data.Length);
+
+
         }
     }
 }

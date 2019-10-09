@@ -6,7 +6,7 @@ namespace Morpion3Dimension.Model
 {
     public class GameOverMessage : Message
     {
-        private bool win;
+        public bool win;
 
         public GameOverMessage(bool win)
         {

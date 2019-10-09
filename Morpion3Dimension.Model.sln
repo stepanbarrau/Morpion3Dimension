@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Morpion3Dimension.Model", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Morpion3Dimension.ModelUnitTest", "Morpion3Dimension.ModelUnitTest\Morpion3Dimension.ModelUnitTest.csproj", "{ECCE3732-38F8-428B-B23A-73BA8E5EA358}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Morpion3Dimension.Server", "Morpion3Dimension.Server\Morpion3Dimension.Server.csproj", "{1D5000D5-15A8-4492-8C8A-20419E54D4A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Morpion3Dimension.Server", "Morpion3Dimension.Server\Morpion3Dimension.Server.csproj", "{1D5000D5-15A8-4492-8C8A-20419E54D4A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Morpion3Dimension.ConsoleClient", "Morpion3Dimension.ConsoleClient\Morpion3Dimension.ConsoleClient.csproj", "{8105258D-771F-498A-884C-AFFD4D0E3B64}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{1D5000D5-15A8-4492-8C8A-20419E54D4A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D5000D5-15A8-4492-8C8A-20419E54D4A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D5000D5-15A8-4492-8C8A-20419E54D4A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8105258D-771F-498A-884C-AFFD4D0E3B64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8105258D-771F-498A-884C-AFFD4D0E3B64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8105258D-771F-498A-884C-AFFD4D0E3B64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8105258D-771F-498A-884C-AFFD4D0E3B64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

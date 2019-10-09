@@ -36,6 +36,7 @@ namespace Morpion3Dimension.Server
 
         public void startListening()
         {
+            Console.WriteLine("Start listening");
             listener = new TcpListener(adress, 8080);
             listener.Start();
             ThreadPool.QueueUserWorkItem(this.ListenerWorker, null);
@@ -53,11 +54,11 @@ namespace Morpion3Dimension.Server
         {
             Byte[] bytes = new Byte[1024];
             StringBuilder builder = new StringBuilder();
+            var client = token as TcpClient;
+            var stream = client.GetStream();
 
 
-            using (var client = token as TcpClient)
-            using (var stream = client.GetStream())
-            {
+
                /* int length;
                 while ((length = stream.Read(bytes, 0, bytes.Length)) != 0)
                 {
@@ -68,7 +69,11 @@ namespace Morpion3Dimension.Server
                 
                 // pass client to the GameStarter class
                 gameStarter.AddClient(client);
+            while(true)
+            {
+                Thread.Sleep(100);
             }
+
         }
 
 

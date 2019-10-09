@@ -3,7 +3,6 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <StartupObject>Morpion3Dimension.Server.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,4 +10,3 @@
   </ItemGroup>
 
 </Project>
-
