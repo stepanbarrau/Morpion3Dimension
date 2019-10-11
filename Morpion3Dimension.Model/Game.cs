@@ -28,6 +28,7 @@ namespace Morpion3Dimension.Model
             currentPlayer = player1; otherPlayer = player2;
             grid = new Grid();
             isOver = false;
+            BroadcastGrid();
 
             while (! isOver)
             { 

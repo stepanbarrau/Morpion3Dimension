@@ -36,7 +36,7 @@ namespace Morpion3Dimension.ConsoleClient
 
 
             var coord = (int[]) choice.Select(i => Int32.Parse(i)).ToArray();
-
+            // Console.WriteLine(coord.ToString() + " | " + coord.Length);
             return (new Move(coord));
         }
 
@@ -48,6 +48,7 @@ namespace Morpion3Dimension.ConsoleClient
 
         public void DisplayNewGrid(Grid grid)
         {
+            Console.WriteLine("Grid");
             Console.WriteLine(grid.ToString());
 
         }
