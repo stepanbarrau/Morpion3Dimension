@@ -30,6 +30,7 @@ namespace Morpion3Dimension.Model
         public static string GetData(byte[] data)
         {
             var strData = Encoding.UTF8.GetString(data);
+            Console.WriteLine(strData);
             int offset = strData.Split('|')[0].Length;
             return strData.Substring(offset + 1);
 

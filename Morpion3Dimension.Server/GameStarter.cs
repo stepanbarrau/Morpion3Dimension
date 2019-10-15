@@ -48,10 +48,10 @@ namespace Morpion3Dimension.Server
 
         private void GreetClient(TcpClient client)
         {
+            Console.WriteLine($"Client {client} connected");
             byte[] data = Encoding.UTF8.GetBytes($"You're connected, there is currently {tcpClients.Count}  other clients connected");
-            client.GetStream().Write(data, 0, data.Length);
-
-
+            NetworkStream stream = client.GetStream();
+            stream.Write(data, 0, data.Length);
         }
     }
 }

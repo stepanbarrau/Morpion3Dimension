@@ -25,9 +25,11 @@ namespace Morpion3Dimension.Model
 
         void start()
         {
+            Console.WriteLine("game started");
             currentPlayer = player1; otherPlayer = player2;
             grid = new Grid();
             isOver = false;
+            BroadcastGrid();
 
             while (! isOver)
             { 
@@ -67,6 +69,7 @@ namespace Morpion3Dimension.Model
 
         private void BroadcastGrid()
         {
+            Console.WriteLine("broadcasing game");
             player1.SendGrid(grid);
             player2.SendGrid(grid);
         }

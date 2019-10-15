@@ -37,7 +37,7 @@ namespace Morpion3Dimension.Server
         public void startListening()
         {
             Console.WriteLine("Start listening");
-            listener = new TcpListener(adress, 8080);
+            listener = new TcpListener(IPAddress.Any, 8080);
             listener.Start();
             ThreadPool.QueueUserWorkItem(this.ListenerWorker, null);
         }
