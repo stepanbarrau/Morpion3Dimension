@@ -48,7 +48,7 @@ namespace Morpion3Dimension.Server
                     waitingMove = false;
 
                 }
-                catch { }                
+                catch (Exception e) { Console.WriteLine(e.ToString()); }                
             }
             return move;
 

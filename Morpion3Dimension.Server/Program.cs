@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 /*using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -19,7 +20,10 @@ namespace Morpion3Dimension.Server
             Console.WriteLine("Hello World");
             _instance = ConnectionListener.Instance;
             _instance.startListening();
-            Console.ReadLine();
+            while(true)
+            {
+                Thread.Sleep(100);
+            }
         }
 
        /* public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>

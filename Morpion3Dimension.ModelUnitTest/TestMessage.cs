@@ -93,6 +93,18 @@ namespace Morpion3Dimension.ModelUnitTest
             Assert.AreEqual(grid.MessageToString(), grid2.MessageToString());
         }
 
+        [TestMethod]
+        public void TestGridToString()
+        {
+            var grid = new Grid();
+            string gridStr = grid.ToString();
+            string res1= "0|0|0|\n";
+            string res = "";
+            for (int i = 0; i < 9; i++)
+                res += res1;
+            Assert.AreEqual(gridStr, res);
+        }
+
 
 
 

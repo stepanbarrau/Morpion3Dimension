@@ -55,11 +55,11 @@ namespace Morpion3Dimension.Model
                 {
                     for (int k = 0; k < 3; k++)
                     {
-                        representation = representation + grid[i, j, k].ToString();
+                        representation = representation + ((int) grid[i, j, k].symbol) + "|";
                     }
                     representation = representation + "\n";
                 }
-                representation = representation + "\n";
+                
             }
             return (representation);
         }
@@ -73,7 +73,7 @@ namespace Morpion3Dimension.Model
                 {
                     for (int k = 0; k < 3; k++)
                     {
-                        data = data + "|" + ((int)grid[i, j, k].symbol).ToString();
+                        data = data  + ((int)grid[i, j, k].symbol).ToString()  + "|";
                     }
                 }
             }
@@ -88,18 +88,19 @@ namespace Morpion3Dimension.Model
             }
             this.type = MessageType.grid;
             var data = Message.GetData(bytes);
+            // Console.WriteLine(data);
             string[] dataString = data.Split('|');
             int[] states = new int[27];
             for (int i = 0; i < 27; i++)
             {
-                Console.WriteLine(dataString[i]);
+                // Console.WriteLine(dataString[i]);
                 try
                 {
                     states[i] = Int32.Parse(dataString[i]);
                 }
                 catch
                 {
-                    Console.Write($"could not convert {dataString[i]}");
+                    Console.Write($"could not convert '{dataString[i]}'");
                 }
             }
 
@@ -110,8 +111,10 @@ namespace Morpion3Dimension.Model
                 {
                     for (int k = 0; k < 3; k++)
                     {
-                        Square square = new Square();
-                        square.symbol = (Symbol)states[currentIndex];
+                        Square square = new Square
+                        {
+                            symbol = (Symbol) states[currentIndex]
+                        };
                         this[i, j, k] = square;
                         currentIndex++;
                     }

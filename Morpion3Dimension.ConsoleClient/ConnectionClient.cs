@@ -14,6 +14,7 @@ namespace Morpion3Dimension.ConsoleClient
         TcpClient client;
         NetworkStream stream;
         byte[] data = new Byte[1024];
+        byte[] dataToSend;
         bool playing;
         private ConsoleInterface inte;
 
@@ -51,7 +52,8 @@ namespace Morpion3Dimension.ConsoleClient
                 byte[] responseData = data.Take(i).ToArray();
                 if (i > 0)
                 {
-                    Console.WriteLine($"Received: {Encoding.UTF8.GetString(responseData)}");
+                    // Console.WriteLine($"data length : {data.Length}, i : {i}");
+                    // Console.WriteLine($"Received: {Encoding.UTF8.GetString(responseData)}");
                 }
                 handleMessage(responseData);
             }
@@ -85,8 +87,8 @@ namespace Morpion3Dimension.ConsoleClient
 
         public void SendMove(Move move)
         {
-            data = Encoding.UTF8.GetBytes(move.MessageToString());
-            stream.Write(data, 0, data.Length);
+            dataToSend = Encoding.UTF8.GetBytes(move.MessageToString());
+            stream.Write(dataToSend, 0, dataToSend.Length);
         }
 
         private void StopConnection()
