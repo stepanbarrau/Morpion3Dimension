@@ -16,6 +16,7 @@ namespace Morpion3Dimension.Server
         static IPAddress adress = IPAddress.Parse("127.0.0.1");
         TcpListener listener;
         private GameStarter gameStarter;
+        byte[] data = new byte[1024];
 
         public static ConnectionListener Instance
         {
@@ -36,7 +37,14 @@ namespace Morpion3Dimension.Server
 
         public void startListening()
         {
-            Console.WriteLine("Start listening");
+            string localIP;
+            Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0);
+            socket.Connect("1.1.1.1", 10000);
+            IPEndPoint endPoint = socket.LocalEndPoint as IPEndPoint;
+            localIP = endPoint.Address.ToString();
+            
+            Console.WriteLine($"Start listening on {localIP}");
+
             listener = new TcpListener(IPAddress.Any, 8080);
             listener.Start();
             ThreadPool.QueueUserWorkItem(this.ListenerWorker, null);
@@ -46,6 +54,8 @@ namespace Morpion3Dimension.Server
             while (listener != null)
             {
                 var client = listener.AcceptTcpClient();
+                Console.WriteLine($"Client {client} connected");
+
                 ThreadPool.QueueUserWorkItem(this.HandleClientWorker, client);
             }
         }
@@ -56,25 +66,35 @@ namespace Morpion3Dimension.Server
             StringBuilder builder = new StringBuilder();
             var client = token as TcpClient;
             var stream = client.GetStream();
+            bool started = false;
+            while (!started)
+            {
+                int dataLength = stream.Read(data, 0, data.Length);
+                byte[] readData = data.Take(dataLength).ToArray();
+                string readyMessage = Encoding.UTF8.GetString(readData);
+                if (readyMessage == "Client Ready")
+                {
+                    Console.WriteLine("client ready");
+                    gameStarter.AddClient(client);
+                    started = true;
+                }
+            }
 
-                
-                // pass client to the GameStarter class
-            gameStarter.AddClient(client);
-            while(client.Connected)
+            while (client.Connected)
             {
 
                 try
                 {
                     // ping client
                     var b = new byte[0];
-                    client.GetStream().Write(b,0,b.Length);
-                } catch (System.IO.IOException e) { }
+                    client.GetStream().Write(b, 0, b.Length);
+                }
+                catch (System.IO.IOException e) { }
                 Thread.Sleep(100);
             }
             Console.WriteLine("A client has disconnected");
             gameStarter.RemoveClient(client);
             client.Dispose();
-
         }
 
 
