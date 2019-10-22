@@ -11,7 +11,7 @@ namespace Morpion3Dimension.Model
         Symbol GetSymbol();
         Move AskMove();
         void SendGrid(Grid grid);
-        void SendGameOver(bool victory);
+        void SendGameOver(WinType winType, Position[] winningSequence);
 
         void SetDisconnection(Del handler);
 

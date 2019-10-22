@@ -21,6 +21,7 @@ namespace Morpion3Dimension.Model
             this.player2 = player2;
             Del handler = this.OnPlayerDisconnected;
             this.player1.SetDisconnection(handler);
+            this.player2.SetDisconnection(handler);
             rules = new Rules();
             start();
         }
@@ -51,8 +52,8 @@ namespace Morpion3Dimension.Model
                 if (rules.winCheck(move, symbol, grid))
                 {
                     isOver = true;
-                    currentPlayer.SendGameOver(true);
-                    otherPlayer.SendGameOver(false);
+                    currentPlayer.SendGameOver(WinType.win, rules.winningSequence);
+                    otherPlayer.SendGameOver(WinType.lose, rules.winningSequence);
                 }
 
                 // otherwise it is the other player turn
@@ -62,7 +63,7 @@ namespace Morpion3Dimension.Model
                 if (rules.IsDraw(grid))
                 {
                     isOver = true;
-                    currentPlayer.SendGameOver(false); otherPlayer.SendGameOver(false);
+                    currentPlayer.SendGameOver(WinType.noContest, rules.winningSequence); otherPlayer.SendGameOver(WinType.noContest, rules.winningSequence);
                 }
             }
         }
@@ -73,18 +74,22 @@ namespace Morpion3Dimension.Model
             Console.WriteLine("End game because a player disconnected");
             if (player==player1)
             {
-                player2.SendGameOver(true);
+
+                player2.SendGameOver(WinType.noContest,
+                                     new Position[3] { new Position(0, 0, 0), new Position(0, 0, 0), new Position(0, 0, 0) });
+
             }
             else
             {
-                player1.SendGameOver(true);
+                player1.SendGameOver(WinType.noContest,
+                                     new Position[3] { new Position(0, 0, 0), new Position(0, 0, 0), new Position(0, 0, 0) });
             }
             
         }
 
         private void BroadcastGrid()
         {
-            Console.WriteLine("broadcasing game");
+            Console.WriteLine("broadcasting game");
             player1.SendGrid(grid);
             player2.SendGrid(grid);
         }

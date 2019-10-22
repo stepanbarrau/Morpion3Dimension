@@ -71,16 +71,16 @@ namespace Morpion3Dimension.ModelUnitTest
         [TestMethod]
         public void TestGameOver()
         {
-            var gameOv = new GameOverMessage(true);
+            var gameOv = new GameOverMessage(WinType.win, new Position[] { new Position(0, 0, 0), new Position(0, 0, 0), new Position(0, 0, 0) });
             byte[] bytes = Encoding.UTF8.GetBytes(gameOv.MessageToString());
-            var gameOv2 = new GameOverMessage(bytes);
+            var gameOv2 = new GameOverMessage(WinType.win, new Position[] { new Position(0, 0, 0), new Position(0, 0, 0), new Position(0, 0, 0) });
             Assert.AreEqual(gameOv.MessageToString(), gameOv2.MessageToString());
         }
 
         [TestMethod]
         public void TestGameOverToString()
         {
-            var gameOv = new GameOverMessage(true);
+            var gameOv = new GameOverMessage(WinType.win, new Position[] { new Position(0, 0, 0), new Position(0, 0, 0), new Position(0, 0, 0) });
             Assert.AreEqual($"OVER|{true.ToString()}", gameOv.MessageToString());
         }
 

@@ -42,7 +42,7 @@ namespace Morpion3Dimension.ConsoleClient
 
         public void DisplayGameOver(GameOverMessage mes)
         {
-            bool win = mes.win;
+            bool win = mes.winType == WinType.win;
             Console.WriteLine($"Game is over, you {(win ? "won" : "lost")}");
         }
 

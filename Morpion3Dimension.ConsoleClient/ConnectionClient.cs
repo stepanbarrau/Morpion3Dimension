@@ -42,6 +42,9 @@ namespace Morpion3Dimension.ConsoleClient
 
             stream = client.GetStream();
 
+            // Send client ready to server
+            byte[] dataReady = Encoding.UTF8.GetBytes("Client Ready");
+            stream.Write(dataReady, 0, dataReady.Length);
             playing = true;
 
             // stream.BeginRead(data, 0, data.Length, handleMessage, null);

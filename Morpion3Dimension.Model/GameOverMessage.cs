@@ -4,14 +4,23 @@ using System.Text;
 
 namespace Morpion3Dimension.Model
 {
+    public enum WinType
+    {
+        win = 0,
+        lose = 1,
+        noContest = 2,
+    }
+
     public class GameOverMessage : Message
     {
-        public bool win;
+        public WinType winType;
+        public Position[] winningSequence;
 
-        public GameOverMessage(bool win)
+        public GameOverMessage(WinType winType, Position[] winningSequence)
         {
             this.type = MessageType.gameOver;
-            this.win = win;
+            this.winType = winType;
+            this.winningSequence = winningSequence;
         }
 
         public GameOverMessage(byte[] bytes)
@@ -20,10 +29,15 @@ namespace Morpion3Dimension.Model
             {
                 throw new Exception("Error: trying to deserialize to move an object with wrong Messagetype");
             }
-            var data = Message.GetData(bytes); try
+            var data = Message.GetData(bytes);
+            string[] dataString = data.Split('|');
+            try
             {
-                win = bool.Parse(data);
-                type = MessageType.gameOver;
+                this.winType = (WinType)Int32.Parse(dataString[0]);
+                Position p1 = Position.StringToPosition(dataString[1]);
+                Position p2 = Position.StringToPosition(dataString[2]);
+                Position p3 = Position.StringToPosition(dataString[3]);
+                this.winningSequence = new Position[]{ p1, p2, p3 };
             }
             catch
             {
@@ -33,7 +47,7 @@ namespace Morpion3Dimension.Model
         }
         public override string DataToString()
         {
-            return win.ToString();
+            return($"{(int) winType}|{winningSequence[0].ToString()}|{winningSequence[1].ToString()}|{winningSequence[2].ToString()}");
         }
     }
 }

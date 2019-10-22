@@ -44,7 +44,6 @@ namespace Morpion3Dimension.Server
                 if (!client.Connected)
                 {
                     Console.WriteLine("TCPclient is not connected anymore");
-
                     disconnect(this);
                     return false;
                 }
@@ -90,13 +89,9 @@ namespace Morpion3Dimension.Server
             return symbol;
         }
 
-        public void SendGameOver(bool victory)
+        public void SendGameOver(WinType winType, Position[] winningSequence)
         {
-            if (!checkConnection())
-            {
-                return;
-            }
-            var gameOver = new GameOverMessage(victory);
+            var gameOver = new GameOverMessage(winType, winningSequence);
             var data = Encoding.UTF8.GetBytes(gameOver.MessageToString());
             try
             {
