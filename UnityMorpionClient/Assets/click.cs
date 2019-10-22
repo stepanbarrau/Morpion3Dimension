@@ -10,6 +10,7 @@ public class click : MonoBehaviour
     public Antenna antenna;
     logging logging;
     changeColor changeColor;
+    bool animateWinSequence = false;
     
     void Awake()
     {
@@ -17,6 +18,7 @@ public class click : MonoBehaviour
         logging = GameObject.Find("Text").GetComponent<logging>();
         antenna = GameObject.Find("AntennaObject").GetComponent<Antenna>();
         antenna.DisplayNewGridEvent += OnDisplayNewGridEvent;
+        antenna.WinEvent += OnGameOverEvent;
 
         SetCoord();
     }
@@ -46,9 +48,28 @@ public class click : MonoBehaviour
         //Debug.Log($"I (Cube {x}, {y}, {z}) am displaying a new grid");
     }
 
+    public void OnGameOverEvent(GameOverMessage message)
+    {
+        Position[] winningSequence = message.winningSequence;
+        foreach(Position p in winningSequence){
+            if((x,y,z) == (p.x, p.y, p.z))
+            {
+                this.animateWinSequence = true;
+            }
+        }
+    }
+
     public void SendMove(Move move) 
     {
         Debug.Log($"Sending a move from cube {x}, {y}, {z}");
         antenna.SendMove(move);
+    }
+
+    private void Update()
+    {
+        if (animateWinSequence)
+        {
+            transform.Rotate(new Vector3(0, 1, 0), 10);
+        }
     }
 }

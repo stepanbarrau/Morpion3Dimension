@@ -15,6 +15,9 @@ public class Antenna : MonoBehaviour, IGraphics
     public delegate void DisplayGrid(Morpion3Dimension.Model.Grid grid);
     public event DisplayGrid DisplayNewGridEvent;
 
+    public delegate void GameOver(GameOverMessage message);
+    public event GameOver WinEvent;
+
     ConnectionClient client;
 
     void Start()
@@ -46,9 +49,16 @@ public class Antenna : MonoBehaviour, IGraphics
     public void DisplayGameOver(GameOverMessage gameOverMessage)
     {
         if (gameOverMessage.winType == WinType.win)
-            logging.PrintToConsole("YOU WON!!!");
+        {
+            if (WinEvent != null)
+                WinEvent(gameOverMessage);
+        }
+
         if (gameOverMessage.winType == WinType.lose)
-            logging.PrintToConsole("YOU LOST!!!");
+        {
+            if (WinEvent != null)
+                WinEvent(gameOverMessage);
+        }
     }
 
     public void DisplayNewGrid(Morpion3Dimension.Model.Grid grid)
