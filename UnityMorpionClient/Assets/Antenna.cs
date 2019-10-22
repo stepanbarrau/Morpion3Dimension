@@ -1,18 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Morpion3Dimension.Model;
 //using Morpion3Dimension.UnityClient;
-using UnityEngine.UI;
 using System;
-using Morpion3Dimension.Model;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
 
 public class Antenna : MonoBehaviour, IGraphics
 {
@@ -46,12 +39,16 @@ public class Antenna : MonoBehaviour, IGraphics
     public void AskMove()
     {
         moveNeeded = true;
+        logging.PrintToConsole("it's your turn");
         Debug.Log("I was asked a move");
     }
 
     public void DisplayGameOver(GameOverMessage gameOverMessage)
     {
-        throw new NotImplementedException();
+        if (gameOverMessage.winType == WinType.win)
+            logging.PrintToConsole("YOU WON!!!");
+        if (gameOverMessage.winType == WinType.lose)
+            logging.PrintToConsole("YOU LOST!!!");
     }
 
     public void DisplayNewGrid(Morpion3Dimension.Model.Grid grid)
