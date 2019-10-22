@@ -19,6 +19,8 @@ namespace Morpion3Dimension.Model
         {
             this.player1 = player1;
             this.player2 = player2;
+            Del handler = this.OnPlayerDisconnected;
+            this.player1.SetDisconnection(handler);
             rules = new Rules();
             start();
         }
@@ -37,10 +39,8 @@ namespace Morpion3Dimension.Model
                 var symbol = currentPlayer.GetSymbol();
 
                 // check if move is valid
-                if (! rules.isValidMove(move, symbol, grid))
-                {
-                    continue;
-                }
+                if (move == null) continue;
+                if (!rules.isValidMove(move, symbol, grid)) continue;
 
                 // play move
                 grid.PlayMove(move, symbol);
@@ -65,6 +65,21 @@ namespace Morpion3Dimension.Model
                     currentPlayer.SendGameOver(false); otherPlayer.SendGameOver(false);
                 }
             }
+        }
+
+        public void OnPlayerDisconnected(IPlayer player)
+        {
+            isOver = true;
+            Console.WriteLine("End game because a player disconnected");
+            if (player==player1)
+            {
+                player2.SendGameOver(true);
+            }
+            else
+            {
+                player1.SendGameOver(true);
+            }
+            
         }
 
         private void BroadcastGrid()
