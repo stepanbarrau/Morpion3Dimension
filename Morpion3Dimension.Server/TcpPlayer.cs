@@ -23,6 +23,9 @@ namespace Morpion3Dimension.Server
         Symbol symbol;
         IPEndPoint ipep;
 
+        // use to alert the game that the client is disconnected
+        public Model.Del disconnect;
+
         public TcpPlayer(TcpClient client, Symbol symbol)
         {
             this.client = client;
@@ -31,23 +34,50 @@ namespace Morpion3Dimension.Server
             stream = client.GetStream();
             Console.WriteLine($"new TCPPlayer created : IP = {ipep.Address.ToString()}, port = {ipep.Port.ToString()}");
         }
-        public Move AskMove()
+
+  
+        
+        public bool checkConnection()
         {
+            try
+            {
+                if (!client.Connected)
+                {
+                    Console.WriteLine("TCPclient is not connected anymore");
+
+                    disconnect(this);
+                    return false;
+                }
+            } catch (Exception e)
+            {
+                Console.WriteLine("error occured while checking client connection", e.StackTrace);
+                disconnect(this);
+                return false;
+            }
+            return true;
+        }
+        
+        public Move AskMove()
+        {   
             Byte[] bytes = new Byte[1024];
             bool waitingMove = true;
             Move move = null;
             while (waitingMove){
-
+                if (!checkConnection())
+                {
+                    return null;
+                }
                 try
                 {
                     stream.Write(Encoding.UTF8.GetBytes("MOVE"));
                     Console.WriteLine($"asked a move from IP = {ipep.Address.ToString()}, port = {ipep.Port.ToString()}");
-                    stream.Read(bytes, 0, bytes.Length);
-                    move = new Move(bytes);
+                    Int32 i = stream.Read(bytes, 0, bytes.Length);
+                    move = new Move(bytes.Take(i).ToArray());
                     Console.WriteLine($"received a move from IP = {ipep.Address.ToString()}, port = {ipep.Port.ToString()}");
                     waitingMove = false;
 
                 }
+                catch(System.ObjectDisposedException e) { disconnect(this); }
                 catch (Exception e) { Console.WriteLine(e.ToString()); }                
             }
             return move;
@@ -62,15 +92,40 @@ namespace Morpion3Dimension.Server
 
         public void SendGameOver(bool victory)
         {
+            if (!checkConnection())
+            {
+                return;
+            }
             var gameOver = new GameOverMessage(victory);
             var data = Encoding.UTF8.GetBytes(gameOver.MessageToString());
-            stream.Write(data, 0, data.Length);
+            try
+            {
+                stream.Write(data, 0, data.Length);
+            }
+            catch (System.IO.IOException e)
+            {
+            }
         }
 
         public void SendGrid(Grid grid)
         {
+            if (!checkConnection())
+            {
+                return;
+            }
             var data = Encoding.UTF8.GetBytes(grid.MessageToString());
-            stream.Write(data, 0, data.Length);
+            try
+            {
+                stream.Write(data, 0, data.Length);
+            }
+            catch (System.IO.IOException e)
+            {
+            }
+        }
+
+        public void SetDisconnection(Model.Del handler)
+        {
+            this.disconnect = handler;
         }
     }
 }
