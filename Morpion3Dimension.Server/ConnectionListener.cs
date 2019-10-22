@@ -57,22 +57,23 @@ namespace Morpion3Dimension.Server
             var client = token as TcpClient;
             var stream = client.GetStream();
 
-
-
-               /* int length;
-                while ((length = stream.Read(bytes, 0, bytes.Length)) != 0)
-                {
-                    builder.Append(Encoding.ASCII.GetString(bytes, 0, length));
-                }
-
-                var msg = builder.ToString();*/
                 
                 // pass client to the GameStarter class
-                gameStarter.AddClient(client);
-            while(true)
+            gameStarter.AddClient(client);
+            while(client.Connected)
             {
+
+                try
+                {
+                    // ping client
+                    var b = new byte[0];
+                    client.GetStream().Write(b,0,b.Length);
+                } catch (System.IO.IOException e) { }
                 Thread.Sleep(100);
             }
+            Console.WriteLine("A client has disconnected");
+            gameStarter.RemoveClient(client);
+            client.Dispose();
 
         }
 

@@ -53,5 +53,23 @@ namespace Morpion3Dimension.Server
             NetworkStream stream = client.GetStream();
             stream.Write(data, 0, data.Length);
         }
+
+        internal void RemoveClient(TcpClient client)
+        {
+            lock(tcpClients)
+            {
+                int len = tcpClients.Count;
+                TcpClient cli = null;
+                for (int i = 0; i < len; i++)
+                {
+                    tcpClients.TryDequeue(out cli);
+                    if (cli != client)
+                    {
+                        tcpClients.Enqueue(client);
+                    }
+
+                }
+            }
+        }
     }
 }
