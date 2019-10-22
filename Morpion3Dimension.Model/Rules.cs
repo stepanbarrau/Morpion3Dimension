@@ -37,8 +37,8 @@ namespace Morpion3Dimension.Model
                         Square next = (Square)grid[position.x + direction.x, position.y + direction.y, position.z + direction.z];
                         while (next.symbol == symbol)
                         {
-                            this.winningSequence[consecutives+1] = position;
                             position = new Position(position.x + direction.x, position.y + direction.y, position.z + direction.z );
+                            this.winningSequence[consecutives + 1] = position;
                             consecutives++;
 
                             next = (Square)grid[position.x + direction.x, position.y + direction.y, position.z + direction.z];
@@ -50,9 +50,9 @@ namespace Morpion3Dimension.Model
                     {
                         Square next = (Square)grid[position.x - direction.x, position.y - direction.y, position.z - direction.z];
                         while (next.symbol == symbol)
-                        {
-                            this.winningSequence[consecutives+1] = position;
+                        {                            
                             position = new Position(position.x - direction.x, position.y - direction.y, position.z - direction.z);
+                            this.winningSequence[consecutives + 1] = position;
                             consecutives++;
                             next = (Square)grid[position.x - direction.x, position.y - direction.y, position.z - direction.z];
 
