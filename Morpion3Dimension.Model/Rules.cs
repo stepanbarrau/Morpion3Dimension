@@ -7,71 +7,73 @@ namespace Morpion3Dimension.Model
 {
     public class Rules
     {
+        public Position[] winningSequence = new Position[3];
 
-            public bool isValidMove(Move move, Symbol symbol, Grid grid)
+        public bool isValidMove(Move move, Symbol symbol, Grid grid)
+        {
+            if (grid.FindSquare(move).symbol == Symbol.empty)
             {
-                if (grid.FindSquare(move).symbol == Symbol.empty)
-                {
-                    return (true);
-                }
-                return (false);
+                return (true);
             }
-            public bool winCheck(Move move, Symbol symbol, Grid grid)
+            return (false);
+        }
+        public bool winCheck(Move move, Symbol symbol, Grid grid)
+        {
+            var range = Enumerable.Range(0, 3);
+            var directions_ = from x in range from y in range from z in range select new { x, y, z };
+            var directions = directions_.Select((i) => new { x = i.x - 1, y = i.y - 1, z = i.z - 1 });
+
+            foreach (var direction in directions)
             {
-
-                var range = Enumerable.Range(0, 3);
-                var directions_ = from x in range from y in range from z in range select new { x, y, z };
-                var directions = directions_.Select((i) => new { x = i.x - 1, y = i.y - 1, z = i.z - 1 });
-
-                foreach (var direction in directions)
+                if ((direction.x, direction.y, direction.z) != (0, 0, 0))
                 {
-                    if ((direction.x, direction.y, direction.z) != (0, 0, 0))
+                    Position position = new Position(move.x, move.y, move.z);
+                    int consecutives = 0;
+                    this.winningSequence = new Position[3];
+                    this.winningSequence[0] = position;
+
+                    try
                     {
-                        var position = new { x = move.x, y = move.y, z = move.z };
-                        int consecutives = 0;
-
-                        try
+                        Square next = (Square)grid[position.x + direction.x, position.y + direction.y, position.z + direction.z];
+                        while (next.symbol == symbol)
                         {
-                            Square next = (Square)grid[position.x + direction.x, position.y + direction.y, position.z + direction.z];
-                            while (next.symbol == symbol)
-                            {
-                                position = new { x = position.x + direction.x, y = position.y + direction.y, z = position.z + direction.z };
-                                consecutives++;
+                            this.winningSequence[consecutives+1] = position;
+                            position = new Position(position.x + direction.x, position.y + direction.y, position.z + direction.z );
+                            consecutives++;
 
-                                next = (Square)grid[position.x + direction.x, position.y + direction.y, position.z + direction.z];
-
-
-                            }
+                            next = (Square)grid[position.x + direction.x, position.y + direction.y, position.z + direction.z];
                         }
-                        catch { };
-                        position = new { x = move.x, y = move.y, z = move.z };
-                        try
+                    }
+                    catch { };
+                    position = new Position(move.x, move.y, move.z);
+                    try
+                    {
+                        Square next = (Square)grid[position.x - direction.x, position.y - direction.y, position.z - direction.z];
+                        while (next.symbol == symbol)
                         {
-                            Square next = (Square)grid[position.x - direction.x, position.y - direction.y, position.z - direction.z];
-                            while (next.symbol == symbol)
-                            {
-                                position = new { x = position.x - direction.x, y = position.y - direction.y, z = position.z - direction.z };
-                                consecutives++;
-                                next = (Square)grid[position.x - direction.x, position.y - direction.y, position.z - direction.z];
+                            this.winningSequence[consecutives+1] = position;
+                            position = new Position(position.x - direction.x, position.y - direction.y, position.z - direction.z);
+                            consecutives++;
+                            next = (Square)grid[position.x - direction.x, position.y - direction.y, position.z - direction.z];
 
 
 
-                            }
                         }
-                        catch { };
+                    }
+                    catch { };
 
-                        if (consecutives >= 2)
-                        {
-                            return (true);
-                        }
-
+                    if (consecutives >= 2)
+                    {
+                        return (true);
                     }
 
                 }
-                return (false);
-
 
             }
+            return (false);
+
+
+        }
 
         public bool IsDraw(Grid grid)
         {

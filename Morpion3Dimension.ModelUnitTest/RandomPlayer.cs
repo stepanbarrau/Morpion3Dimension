@@ -26,9 +26,9 @@ namespace Morpion3Dimension.ModelUnitTest
 
             return (new Move(coord));
         }
-        public void SendGameOver(bool victory)
+        public void SendGameOver(WinType winType, Position[] winningSequence)
         {
-            Console.WriteLine($"Game Over, is {symbol} the winner? {victory}");
+            Console.WriteLine($"Game Over, is {symbol} the winner? {winType}");
         }
 
         public void SendGrid(Grid grid) {}

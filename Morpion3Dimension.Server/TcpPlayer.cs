@@ -60,9 +60,9 @@ namespace Morpion3Dimension.Server
             return symbol;
         }
 
-        public void SendGameOver(bool victory)
+        public void SendGameOver(WinType winType, Position[] winningSequence)
         {
-            var gameOver = new GameOverMessage(victory);
+            var gameOver = new GameOverMessage(winType, winningSequence);
             var data = Encoding.UTF8.GetBytes(gameOver.MessageToString());
             stream.Write(data, 0, data.Length);
         }

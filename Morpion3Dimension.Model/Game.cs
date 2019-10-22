@@ -51,8 +51,8 @@ namespace Morpion3Dimension.Model
                 if (rules.winCheck(move, symbol, grid))
                 {
                     isOver = true;
-                    currentPlayer.SendGameOver(true);
-                    otherPlayer.SendGameOver(false);
+                    currentPlayer.SendGameOver(WinType.win, rules.winningSequence);
+                    otherPlayer.SendGameOver(WinType.lose, rules.winningSequence);
                 }
 
                 // otherwise it is the other player turn
@@ -62,7 +62,7 @@ namespace Morpion3Dimension.Model
                 if (rules.IsDraw(grid))
                 {
                     isOver = true;
-                    currentPlayer.SendGameOver(false); otherPlayer.SendGameOver(false);
+                    currentPlayer.SendGameOver(WinType.noContest, rules.winningSequence); otherPlayer.SendGameOver(WinType.noContest, rules.winningSequence);
                 }
             }
         }
