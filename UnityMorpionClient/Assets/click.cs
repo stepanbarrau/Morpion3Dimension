@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
 using UnityEngine;
 using Morpion3Dimension.Model;
-using Morpion3Dimension.UnityClient;
-using UnityEngine.UI;
 public class click : MonoBehaviour
 { 
     public int x;
@@ -43,14 +36,14 @@ public class click : MonoBehaviour
     public void OnDisplayNewGridEvent(Morpion3Dimension.Model.Grid grid)
     {
         
-        Debug.Log($"trying to display grid at {x}{y}{z}");
+        //Debug.Log($"trying to display grid at {x}{y}{z}");
         Square square = (Square)grid[x, y, z];
         Symbol symbol = square.symbol;
         if (symbol == Symbol.empty) { changeColor.DrawBlank(); }
         if (symbol == Symbol.circle) { changeColor.DrawCircle(); }
         if (symbol == Symbol.cross) { changeColor.DrawCross(); }
 
-        Debug.Log($"I (Cube {x}, {y}, {z}) am displaying a new grid");
+        //Debug.Log($"I (Cube {x}, {y}, {z}) am displaying a new grid");
     }
 
     public void SendMove(Move move) 

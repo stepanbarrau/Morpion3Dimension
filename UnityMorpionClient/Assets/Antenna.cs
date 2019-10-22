@@ -1,18 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Morpion3Dimension.Model;
 //using Morpion3Dimension.UnityClient;
-using UnityEngine.UI;
 using System;
-using Morpion3Dimension.Model;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
 
 public class Antenna : MonoBehaviour, IGraphics
 {
@@ -27,17 +20,16 @@ public class Antenna : MonoBehaviour, IGraphics
     void Start()
     {
         Screen.SetResolution(512, 348, true);
-        Screen.fullScreen = !Screen.fullScreen;
+        Screen.fullScreen = false;
     }
     void Awake()
     {
         logging = GameObject.Find("Text").GetComponent<logging>();
-        client = new ConnectionClient(this);
-        //IPEndPoint ipep = (IPEndPoint)client.client.Client.RemoteEndPoint;
-        //Debug.Log($"client port : {ipep.Port}");
-        logging.PrintToConsole("created client");
-        client.Connect();
-        logging.PrintToConsole("connected client");
+        logging.PrintToConsole("antenna awake");
+        this.client = Variables.client;
+        this.client.graphics = this;
+
+        client.SendReady();
     }
     private void OnApplicationQuit()
     {
@@ -47,12 +39,16 @@ public class Antenna : MonoBehaviour, IGraphics
     public void AskMove()
     {
         moveNeeded = true;
+        logging.PrintToConsole("it's your turn");
         Debug.Log("I was asked a move");
     }
 
     public void DisplayGameOver(GameOverMessage gameOverMessage)
     {
-        throw new NotImplementedException();
+        if (gameOverMessage.winType == WinType.win)
+            logging.PrintToConsole("YOU WON!!!");
+        if (gameOverMessage.winType == WinType.lose)
+            logging.PrintToConsole("YOU LOST!!!");
     }
 
     public void DisplayNewGrid(Morpion3Dimension.Model.Grid grid)
@@ -63,7 +59,7 @@ public class Antenna : MonoBehaviour, IGraphics
 
     public void SendMove(Move move)
     {
-        logging.PrintToConsole("Sending a move from antenna");
+        //logging.PrintToConsole("Sending a move from antenna");
         client.SendMove(move);
         moveNeeded = false;
     }
@@ -81,7 +77,7 @@ public class ConnectionClient
 {
     public IGraphics graphics;
 
-    public IPAddress serverIP = IPAddress.Parse("127.0.0.1");
+    public IPAddress serverIP;
     public int port = 8080;
     public TcpClient client = new TcpClient();
     public byte[] readBuffer = new byte[1024];
@@ -91,37 +87,23 @@ public class ConnectionClient
     public ConnectionClient(IGraphics graphics)
     {
         this.graphics = graphics;
-        logging = GameObject.Find("Text").GetComponent<logging>();
+        this.serverIP = IPAddress.Parse("127.0.0.1");
     }
 
-    public void Connect(string arg = "127.0.0.1")
+    public ConnectionClient(IGraphics graphics, IPAddress address)
     {
-        IPAddress ipAddress;
-        try
-        {
-            ipAddress = IPAddress.Parse(arg);
-        }
-        catch
-        {
-            throw new Exception("This is not an ipAddress, an ip adress looks like this 0.0.0.0");
-        }
+        this.graphics = graphics;
+        this.serverIP = address;
+    }
 
+    public void Connect()
+    {
         //client.BeginConnect(serverIP, port, (ar) => ConnectCallback(ar), client);
         var ipe = new IPEndPoint(serverIP, port);
         client.Connect(ipe);
         stream = client.GetStream();
         stream.BeginRead(readBuffer, 0, readBuffer.Length, (ar4) => OnRead(ar4), null);
         Debug.Log("began reading");
-    }
-
-    public void ConnectCallback(IAsyncResult ar)
-    {
-        TcpClient t = (TcpClient)ar.AsyncState;
-        t.EndConnect(ar);
-        logging.PrintToConsole("connected for real");
-        Debug.Log("connected for real");
-        stream = this.client.GetStream();
-        stream.BeginRead(readBuffer, 0, readBuffer.Length, (ar2) => OnRead(ar2), null);
     }
 
     public void OnRead(IAsyncResult ar)
@@ -133,8 +115,9 @@ public class ConnectionClient
 
         Debug.Log($"onread : stream length = {length}");
         Debug.Log($"onread : received : {Encoding.UTF8.GetString(responseData)}");
-        HandleMessage(responseData);
         stream.BeginRead(readBuffer, 0, readBuffer.Length, (ar3) => OnRead(ar3), null);
+
+        HandleMessage(responseData);
     }
 
     private void HandleMessage(byte[] data)
@@ -159,13 +142,19 @@ public class ConnectionClient
                 graphics.DisplayNewGrid(grid);
                 break;
             default:
-                logging.PrintToConsole(Encoding.UTF8.GetString(data));
+                Debug.Log(Encoding.UTF8.GetString(data));
                 break;
         }
     }
     public void SendMove(Move move)
     {
         byte[] data = Encoding.UTF8.GetBytes(move.MessageToString());
+        stream.Write(data, 0, data.Length);
+    }
+
+    public void SendReady()
+    {
+        byte[] data = Encoding.UTF8.GetBytes("Client Ready");
         stream.Write(data, 0, data.Length);
     }
 
