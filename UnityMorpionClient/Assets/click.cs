@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using Morpion3Dimension.Model;
+
 public class click : MonoBehaviour
 { 
     public int x;
@@ -11,14 +12,20 @@ public class click : MonoBehaviour
     logging logging;
     changeColor changeColor;
     bool animateWinSequence = false;
-    
+    Vector3 rotation = new Vector3(0, 1, 0);
+
+    Ray ray;
+    RaycastHit hit;
+
     void Awake()
     {
-        changeColor = gameObject.GetComponent<changeColor>();
         logging = GameObject.Find("Text").GetComponent<logging>();
         antenna = GameObject.Find("AntennaObject").GetComponent<Antenna>();
         antenna.DisplayNewGridEvent += OnDisplayNewGridEvent;
         antenna.WinEvent += OnGameOverEvent;
+
+        changeColor = gameObject.GetComponent<changeColor>();
+        changeColor.colors = antenna.colors;
 
         SetCoord();
     }
@@ -31,7 +38,7 @@ public class click : MonoBehaviour
 
     private void OnMouseDown()
     {
-        logging.PrintToConsole($"Clicked on cube {x}{y}{z}");
+        Debug.Log($"Clicked on cube {x}{y}{z}");
         if (antenna.moveNeeded) { SendMove(new Move(new int[] { x, y, z })); }
     }
 
@@ -54,6 +61,7 @@ public class click : MonoBehaviour
         foreach(Position p in winningSequence){
             if((x,y,z) == (p.x, p.y, p.z))
             {
+                Debug.Log("make cube spin bc game over");
                 this.animateWinSequence = true;
             }
         }
@@ -65,11 +73,27 @@ public class click : MonoBehaviour
         antenna.SendMove(move);
     }
 
+    private void OnMouseEnter()
+    {
+        if (antenna.moveNeeded && !changeColor.IsSet())
+        {
+            changeColor.DrawSelected();
+        }
+    }
+
+    private void OnMouseExit()
+    {
+        if (antenna.moveNeeded && changeColor.IsSelected())
+        {
+            changeColor.DrawBlank();
+        }
+    }
     private void Update()
     {
+        
         if (animateWinSequence)
         {
-            transform.Rotate(new Vector3(0, 1, 0), 10);
+            transform.Rotate(rotation, 10);
         }
     }
 }

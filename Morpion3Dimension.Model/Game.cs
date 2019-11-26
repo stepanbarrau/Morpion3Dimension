@@ -6,13 +6,13 @@ namespace Morpion3Dimension.Model
 {
     public class Game
     {
-        IPlayer currentPlayer;
-        IPlayer otherPlayer;
-        IPlayer player1;
-        IPlayer player2;
+        private IPlayer currentPlayer;
+        private IPlayer nextPlayer;
+        private IPlayer player1;
+        private IPlayer player2;
 
-        Grid grid;
-        Rules rules;
+        private Grid grid;
+        private Rules rules;
         public bool isOver;
 
         public Game(IPlayer player1, IPlayer player2)
@@ -29,7 +29,7 @@ namespace Morpion3Dimension.Model
         void start()
         {
             Console.WriteLine("game started");
-            currentPlayer = player1; otherPlayer = player2;
+            currentPlayer = player1; nextPlayer = player2;
             grid = new Grid();
             isOver = false;
             BroadcastGrid();
@@ -53,17 +53,17 @@ namespace Morpion3Dimension.Model
                 {
                     isOver = true;
                     currentPlayer.SendGameOver(WinType.win, rules.winningSequence);
-                    otherPlayer.SendGameOver(WinType.lose, rules.winningSequence);
+                    nextPlayer.SendGameOver(WinType.lose, rules.winningSequence);
                 }
 
                 // otherwise it is the other player turn
-                (currentPlayer, otherPlayer) = (otherPlayer, currentPlayer);
+                (currentPlayer, nextPlayer) = (nextPlayer, currentPlayer);
 
                 // if it's a draw stop the game
                 if (rules.IsDraw(grid))
                 {
                     isOver = true;
-                    currentPlayer.SendGameOver(WinType.noContest, rules.winningSequence); otherPlayer.SendGameOver(WinType.noContest, rules.winningSequence);
+                    currentPlayer.SendGameOver(WinType.noContest, rules.winningSequence); nextPlayer.SendGameOver(WinType.noContest, rules.winningSequence);
                 }
             }
         }

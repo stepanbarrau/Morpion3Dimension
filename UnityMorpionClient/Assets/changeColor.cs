@@ -19,11 +19,24 @@ public class changeColor : MonoBehaviour
     public void DrawCross()
     {
         renderer.sharedMaterial = colors[0];
-        Debug.Log("cross");
     }
     public void DrawCircle()
     {
         renderer.sharedMaterial = colors[1];
     }
 
+    public void DrawSelected()
+    {
+        renderer.sharedMaterial = colors[3];
+    }
+
+    public bool IsSelected()
+    {
+        return (renderer.sharedMaterial == colors[3]);
+    }
+
+    public bool IsSet() 
+    { 
+        return (renderer.sharedMaterial == colors[0] || renderer.sharedMaterial == colors[1]); 
+    }
 }

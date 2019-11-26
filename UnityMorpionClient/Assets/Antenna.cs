@@ -6,11 +6,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using UnityEngine.UI;
 
 public class Antenna : MonoBehaviour, IGraphics
 {
     public bool moveNeeded = false;
-    logging logging;
+    public Text logging;
 
     public delegate void DisplayGrid(Morpion3Dimension.Model.Grid grid);
     public event DisplayGrid DisplayNewGridEvent;
@@ -20,15 +21,18 @@ public class Antenna : MonoBehaviour, IGraphics
 
     ConnectionClient client;
 
+    [SerializeField]
+    public Material[] colors;
+
     void Start()
     {
-        Screen.SetResolution(512, 348, true);
+        Screen.SetResolution(512*2, 348*2, true);
         Screen.fullScreen = false;
     }
     void Awake()
     {
-        logging = GameObject.Find("Text").GetComponent<logging>();
-        logging.PrintToConsole("antenna awake");
+        logging = GameObject.Find("Text").GetComponent<Text>();
+        logging.text += ("antenna awake");
         this.client = Variables.client;
         this.client.graphics = this;
 
@@ -42,7 +46,7 @@ public class Antenna : MonoBehaviour, IGraphics
     public void AskMove()
     {
         moveNeeded = true;
-        logging.PrintToConsole("it's your turn");
+        logging.text += ("it's your turn");
         Debug.Log("I was asked a move");
     }
 
@@ -77,7 +81,7 @@ public class Antenna : MonoBehaviour, IGraphics
     
     public void PrintToConsole(string message) 
     {
-        logging.PrintToConsole(message);
+        logging.text += message + "\n";
     }
 }
 
@@ -92,7 +96,6 @@ public class ConnectionClient
     public TcpClient client = new TcpClient();
     public byte[] readBuffer = new byte[1024];
     public NetworkStream stream;
-    logging logging;
 
     public ConnectionClient(IGraphics graphics)
     {
@@ -123,8 +126,8 @@ public class ConnectionClient
 
         byte[] responseData = readBuffer.Take(length).ToArray();
 
-        Debug.Log($"onread : stream length = {length}");
-        Debug.Log($"onread : received : {Encoding.UTF8.GetString(responseData)}");
+        graphics.PrintToConsole($"onread : stream length = {length}");
+        graphics.PrintToConsole($"onread : received : {Encoding.UTF8.GetString(responseData)}");
         stream.BeginRead(readBuffer, 0, readBuffer.Length, (ar3) => OnRead(ar3), null);
 
         HandleMessage(responseData);

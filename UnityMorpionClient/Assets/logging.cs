@@ -7,7 +7,7 @@ public class logging : MonoBehaviour
 
     public void PrintToConsole(string message)
     {
-        //log.text = log.text + message + "\n";
-        Debug.Log(message);
+        log.text = log.text + message + "\n";
+        //Debug.Log(message);
     }
 }

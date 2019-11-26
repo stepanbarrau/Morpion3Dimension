@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using Morpion3Dimension.Model;
 
 /* int length;
@@ -116,6 +116,7 @@ namespace Morpion3Dimension.Server
             catch (System.IO.IOException e)
             {
             }
+            Thread.Sleep(5); //in order to force separation of TCP messages (without sleep they are sometimes concatenated)
         }
 
         public void SetDisconnection(Model.Del handler)
